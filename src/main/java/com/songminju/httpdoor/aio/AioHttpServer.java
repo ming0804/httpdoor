@@ -7,6 +7,9 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.songminju.httpdoor.HttpRequestHandler;
 import com.songminju.httpdoor.HttpServer;
 import com.songminju.httpdoor.HttpServerConfig;
@@ -19,6 +22,7 @@ import com.songminju.httpdoor.aio.handler.SocketAcceptHandler;
 *
 */
 public class AioHttpServer implements HttpServer{
+	private static Logger LOGGER = LoggerFactory.getLogger(AioHttpServer.class);
 	private HttpServerConfig config = null;
 	private AsynchronousServerSocketChannel serverSocket = null;
 	private HttpRequestHandler handler = null;
@@ -33,6 +37,7 @@ public class AioHttpServer implements HttpServer{
 		serverSocket = AsynchronousServerSocketChannel.open(group);
 		serverSocket.bind(new InetSocketAddress(config.address, config.port));
 		serverSocket.accept(null, new SocketAcceptHandler(this));
+		LOGGER.info("Httpdoor had started,listening {}:{}",config.address,config.port);
 	}
 
 	public void shutdown() {

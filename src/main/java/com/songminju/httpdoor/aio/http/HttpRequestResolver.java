@@ -2,6 +2,9 @@ package com.songminju.httpdoor.aio.http;
 
 import java.nio.channels.AsynchronousSocketChannel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.songminju.httpdoor.HttpRequestHandler;
 import com.songminju.httpdoor.aio.AioHttpServer;
 
@@ -11,7 +14,7 @@ import com.songminju.httpdoor.aio.AioHttpServer;
 *
 */
 public class HttpRequestResolver {
-	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	private static final int STATE_NEW = 0;
 	private static final int STATE_REQ_LINE = 1;
 	private static final int STATE_HEADER = 2;
@@ -19,7 +22,7 @@ public class HttpRequestResolver {
 	
 	private StringBuilder context = new StringBuilder();
 	
-	AioHttpRequest req = new AioHttpRequest();
+	AioHttpRequest req = null;
 	
 	private int state = STATE_NEW;
 	private HttpRequestHandler handler;
@@ -32,8 +35,8 @@ public class HttpRequestResolver {
 	
 	public void append(byte[] data) throws Exception{
 		context.append(new String(data));
-		System.out.println(context);
 		if(state == STATE_NEW || state == STATE_REQ_LINE) {
+			req = new AioHttpRequest();
 			resolveRequestLine();
 		}
 		if(state == STATE_HEADER) {
@@ -43,7 +46,9 @@ public class HttpRequestResolver {
 			resolveBody();
 		}
 		if(state == STATE_NEW) {
+			logger.debug("receive a new request from {},uri={},req={},socket={}",client.getRemoteAddress(),req.uri,req.hashCode(),client.hashCode());
 			handler.handle(req, new AioHttpResponse(client));
+			logger.debug("handle finished the request from {},uri={},req={},socket={}",client.getRemoteAddress(),req.uri,req.hashCode(),client.hashCode());
 		}
 	}
 	private void resolveRequestLine() {
