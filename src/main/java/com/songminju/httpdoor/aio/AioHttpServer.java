@@ -31,7 +31,7 @@ public class AioHttpServer implements HttpServer{
 	
 	public AioHttpServer(HttpServerConfig config) {
 		this.config = config;
-		state = new HttpServerState();
+		state = new HttpServerState(this);
 		init();
 	}
 	
@@ -59,14 +59,12 @@ public class AioHttpServer implements HttpServer{
 	public HttpServerState getState() {
 		return state;
 	}
-
+	
+	@Override
 	public HttpServerConfig getConfig() {
 		return config;
 	}
 
-	public void setConfig(HttpServerConfig config) {
-		this.config = config;
-	}
 
 	public AsynchronousServerSocketChannel getServerSocket() {
 		return serverSocket;

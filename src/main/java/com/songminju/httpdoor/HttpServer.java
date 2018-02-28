@@ -14,5 +14,6 @@ public interface HttpServer {
 	void setHttpRequestHandler(HttpRequestHandler handler);
 	HttpRequestHandler getHttpRequestHandler();
 	HttpServerState getState();
+	HttpServerConfig getConfig();
 	
 }

@@ -39,11 +39,11 @@ public class SocketReadHandler implements CompletionHandler<Integer, ByteBuffer>
 		attachment.flip();
 		byte[] buffer = new byte[result];
 		attachment.get(buffer, 0, result);
-		logger.debug("receive:{}",new String(buffer));
 		attachment.clear();
 		try {
 			resolver.append(buffer);
 		} catch (Exception e) {
+			e.printStackTrace();
 			closeConn();
 			return;
 		}

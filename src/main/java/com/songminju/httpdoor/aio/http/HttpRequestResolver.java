@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.songminju.httpdoor.HttpRequestHandler;
+import com.songminju.httpdoor.HttpServer;
+import com.songminju.httpdoor.HttpServerConfig;
+import com.songminju.httpdoor.HttpServerState;
 import com.songminju.httpdoor.aio.AioHttpServer;
 import com.songminju.httpdoor.http.HttpResponse;
 
@@ -26,11 +29,11 @@ public class HttpRequestResolver {
 	AioHttpRequest req = null;
 	
 	private int state = STATE_NEW;
-	private HttpRequestHandler handler;
 	private AsynchronousSocketChannel client;
+	private HttpServer httpServer = null;
 	
 	public HttpRequestResolver(AioHttpServer httpServer,AsynchronousSocketChannel client) {
-		this.handler = httpServer.getHttpRequestHandler();
+		this.httpServer = httpServer;
 		this.client = client;
 	}
 	
@@ -49,8 +52,15 @@ public class HttpRequestResolver {
 		if(state == STATE_NEW) {
 			logger.debug("receive a new request from {},uri={},req={},socket={}",client.getRemoteAddress(),req.uri,req.hashCode(),client.hashCode());
 			HttpResponse resp = new AioHttpResponse(client);
-			handler.handle(req, resp);
-			resp.end();
+			HttpServerState state = httpServer.getState();
+			state.incrementAndGet(HttpServerState.FIELD_CONCURRENT);
+			try {
+				httpServer.getHttpRequestHandler().handle(req, resp);
+				state.decrementAndGet(HttpServerState.FIELD_CONCURRENT);
+			}catch(Exception e) {
+				state.decrementAndGet(HttpServerState.FIELD_CONCURRENT);
+				throw e;
+			}
 			logger.debug("handle finished the request from {},uri={},req={},socket={}",client.getRemoteAddress(),req.uri,req.hashCode(),client.hashCode());
 		}
 	}

@@ -1,11 +1,6 @@
 package com.songminju.httpdoor;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousFileChannel;
-import java.nio.channels.CompletionHandler;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +23,11 @@ public class App {
 			@Override
 			public void handle(HttpRequest req, HttpResponse res) {
 				res.append("123");
+				try {
+					res.end();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}	
 		});
 		try {

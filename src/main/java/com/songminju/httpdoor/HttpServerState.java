@@ -19,7 +19,7 @@ public class HttpServerState {
 	
 	private String state = STATE_STOPED;
 	
-	public HttpServerState(){
+	public HttpServerState(HttpServer httpServer){
 		fields[0] = new AtomicInteger(0);
 		fields[1] = new AtomicInteger(0);
 	}

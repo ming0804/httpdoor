@@ -42,13 +42,17 @@ public class SocketAcceptHandler implements CompletionHandler<AsynchronousSocket
 		int n = state.incrementAndGet(HttpServerState.FIELD_CONNECTION);
 		
 		ByteBuffer byteBuf = ByteBuffer.allocate(256);
-		client.read(byteBuf,30L,TimeUnit.SECONDS,byteBuf, new SocketReadHandler(httpServer,client));
+		client.read(byteBuf,config.readWait,TimeUnit.SECONDS,byteBuf, new SocketReadHandler(httpServer,client));
 		
-		if(n < config.maxConnection) {
-			serverSocket.accept(attachment, this);
-		}else {
-			//
+		while(n >= config.maxConnection) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			n = state.incrementAndGet(HttpServerState.FIELD_CONNECTION);
 		}
+		serverSocket.accept(attachment, this);
 	}
 	@Override
 	public void failed(Throwable e, Void attachment) {

@@ -24,12 +24,12 @@ public class AioHttpResponse implements HttpResponse {
 
 		@Override
 		public void completed(Integer result, Void attachment) {
-			
+			canWrite = true;
 		}
 
 		@Override
 		public void failed(Throwable exc, Void attachment) {
-			
+			canWrite = true;
 		}
 		
 	}
@@ -134,18 +134,21 @@ public class AioHttpResponse implements HttpResponse {
 		int size = baos.size();
 		if(size > 0 ) {
 			byte[] data = baos.toByteArray();
-			logger.debug("write:{}",new String(data));
 			baos.reset();
-			while(!canWrite) {
-				try {
-					canWrite.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
+			
 			int offset = 0;
 			int len = data.length;
 			while(offset < len) {
+				while(!canWrite) {
+					logger.debug("wait canWrite.");
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					logger.debug("canWrite.:{}",canWrite);
+				}
+				canWrite = false;
 				buffer.clear();
 				int remain = buffer.remaining();
 				if(remain + offset < len) {
