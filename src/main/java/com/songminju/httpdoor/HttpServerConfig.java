@@ -8,7 +8,6 @@ package com.songminju.httpdoor;
 public class HttpServerConfig {
 	public int port = 9000;
 	public String address = "0.0.0.0";
-	public int maxConn = 300;
-	
-	
+	public int maxConnection = 3000;
+	public int maxConcurrent = 1000;
 }

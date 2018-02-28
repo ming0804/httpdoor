@@ -9,5 +9,5 @@ import com.songminju.httpdoor.http.HttpResponse;
 *
 */
 public interface HttpRequestHandler {
-	void handle(HttpRequest req,HttpResponse res);
+	void handle(HttpRequest req,HttpResponse res) throws Exception;
 }

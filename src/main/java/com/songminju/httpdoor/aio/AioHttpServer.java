@@ -15,6 +15,7 @@ import com.songminju.httpdoor.HttpServer;
 import com.songminju.httpdoor.HttpServerConfig;
 import com.songminju.httpdoor.HttpServerState;
 import com.songminju.httpdoor.aio.handler.SocketAcceptHandler;
+import com.songminju.httpdoor.aio.handler.SocketReadHandler;
 
 /**
 *@author song(mejeesong@qq.com)
@@ -26,9 +27,16 @@ public class AioHttpServer implements HttpServer{
 	private HttpServerConfig config = null;
 	private AsynchronousServerSocketChannel serverSocket = null;
 	private HttpRequestHandler handler = null;
+	private HttpServerState state = null;
 	
 	public AioHttpServer(HttpServerConfig config) {
 		this.config = config;
+		state = new HttpServerState();
+		init();
+	}
+	
+	public void init() {
+
 	}
 
 	public void start() throws IOException {
@@ -45,10 +53,11 @@ public class AioHttpServer implements HttpServer{
 	}
 
 	public void stop() {
+		
 	}
 
-	public HttpServerState state() {
-		return null;
+	public HttpServerState getState() {
+		return state;
 	}
 
 	public HttpServerConfig getConfig() {

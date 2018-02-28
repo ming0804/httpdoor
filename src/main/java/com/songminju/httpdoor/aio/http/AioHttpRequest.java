@@ -1,5 +1,6 @@
 package com.songminju.httpdoor.aio.http;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,20 +12,47 @@ import com.songminju.httpdoor.http.HttpRequest;
 *
 */
 public class AioHttpRequest implements HttpRequest {
-	public static final String METHOD_GET = "GET";
-	public static final String METHOD_POST = "POST";
-	public static final String METHOD_PUT = "PUT";
-	public static final String METHOD_DELETE = "DELETE";
+	
 	
 	public String method = METHOD_GET;
 	public String uri;
-	public String query = "";
-	private String posts;
+	public String query;
+	private byte[] bodyBytes;
 	public final Map<String,String> headers = new HashMap<>();
+	
 	@Override
 	public String toString() {
-		return "AioHttpRequest [method=" + method + ", uri=" + uri + ", query=" + query + ", posts=" + posts
-				+ ", headers=" + headers + "]";
+		return "AioHttpRequest [method=" + method + ", uri=" + uri + ", query=" + query + ", bodyBytes="
+				+ Arrays.toString(bodyBytes) + ", headers=" + headers + "]";
+	}
+	@Override
+	public String uri() {
+		return uri;
+	}
+	@Override
+	public String method() {
+		return method;
+	}
+	@Override
+	public String query() {
+		return query;
+	}
+	
+	@Override
+	public byte[] bodyBytes() {
+		return bodyBytes;
+	}
+	@Override
+	public String header(String name) {
+		return headers.get(name);
+	}
+	@Override
+	public Map<String, String> headers() {
+		return headers;
+	}
+	@Override
+	public String bodyString() {
+		return String.valueOf(bodyBytes);
 	}
 	
 }

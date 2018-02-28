@@ -13,6 +13,6 @@ public interface HttpServer {
 	void stop();
 	void setHttpRequestHandler(HttpRequestHandler handler);
 	HttpRequestHandler getHttpRequestHandler();
-	HttpServerState state();
+	HttpServerState getState();
 	
 }

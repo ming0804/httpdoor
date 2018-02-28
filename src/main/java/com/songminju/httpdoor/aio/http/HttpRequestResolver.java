@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.songminju.httpdoor.HttpRequestHandler;
 import com.songminju.httpdoor.aio.AioHttpServer;
+import com.songminju.httpdoor.http.HttpResponse;
 
 /**
 *@author song(mejeesong@qq.com)
@@ -47,7 +48,9 @@ public class HttpRequestResolver {
 		}
 		if(state == STATE_NEW) {
 			logger.debug("receive a new request from {},uri={},req={},socket={}",client.getRemoteAddress(),req.uri,req.hashCode(),client.hashCode());
-			handler.handle(req, new AioHttpResponse(client));
+			HttpResponse resp = new AioHttpResponse(client);
+			handler.handle(req, resp);
+			resp.end();
 			logger.debug("handle finished the request from {},uri={},req={},socket={}",client.getRemoteAddress(),req.uri,req.hashCode(),client.hashCode());
 		}
 	}
